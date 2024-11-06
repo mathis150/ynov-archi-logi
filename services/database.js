@@ -4,6 +4,8 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 class DataBase {
+    sequelize;
+    
     constructor() {
         this.sequelize = new Sequelize(process.env.DBNAME, process.env.DBUSER, process.env.DBPASS, {
             host: process.env.HOSTNAME,
