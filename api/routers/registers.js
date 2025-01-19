@@ -1,9 +1,10 @@
 const router = require('express').Router()
-const { addRaspberry, getRaspberrys, getRaspberryById, deleteRaspberryById } = require('../controllers/registers')
+const { addRaspberry, getRaspberrys, getRaspberryById, deleteRaspberryById, pingRaspberry } = require('../controllers/registers')
 
 router.get('/', getRaspberrys)
-router.post('/', addRaspberry)
-router.delete('/', deleteRaspberryById)
+router.post('/:name/:port', addRaspberry);
+router.delete('/:id', deleteRaspberryById)
 router.get('/:id', getRaspberryById)
+router.get('/ping/:id', pingRaspberry);
 
 module.exports = router

@@ -1,26 +1,20 @@
-const { Sequelize } = require('sequelize')
-const dotenv = require('dotenv')
+const { Sequelize } = require('sequelize');
+const dotenv = require('dotenv');
 
-dotenv.config()
+dotenv.config();
 
-class DataBase {
-    sequelize;
-    
-    constructor() {
-        this.sequelize = new Sequelize(process.env.DBNAME, process.env.DBUSER, process.env.DBPASS, {
-            host: process.env.HOSTNAME,
-            dialect: 'mysql'
-        })
-    }
+const sequelize = new Sequelize(process.env.DBNAME, process.env.DBUSER, process.env.DBPASS, {
+  host: process.env.HOSTNAME,
+  dialect: 'mysql',
+});
 
-    async authenticate() {
-        try {
-            await this.sequelize.authenticate() // Utilisez this.sequelize ici
-            console.log('Connection has been established successfully.')
-        } catch (error) {
-            console.error('Unable to connect to the database:', error)
-        }
-    }
-}
+const authenticate = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+};
 
-module.exports = DataBase
+module.exports = { sequelize, authenticate };
