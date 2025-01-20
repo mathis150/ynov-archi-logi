@@ -1,2 +1,2 @@
-/node_modules/
+/vm-docker/node_modules/*
 .env
