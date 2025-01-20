@@ -1,6 +1,5 @@
 const { sequelize } = require('../../services/database'); // Importez l'instance Sequelize
 const RaspberryModel = require('../models/registers');
-const ping = require('ping');
 const net = require('net'); // Pour tester les connexions TCP
 const Raspberry = RaspberryModel(sequelize); // Passez l'instance Sequelize au modèle
 

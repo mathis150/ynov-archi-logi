@@ -1,5 +1,7 @@
 const { addRaspberry, getRaspberrys, getRaspberryById, deleteRaspberryById, pingRaspberry } = require('../services/registers')
 
+const PORT_RANGE_HTTP = { start: 8100, end: 8199 };
+
 exports.getRaspberrys = async (req, res) => {
   try {
     const raspberrys = await getRaspberrys();
@@ -25,22 +27,55 @@ exports.getRaspberryById = async (req, res) => {
 };
 
 exports.addRaspberry = async (req, res) => {
-    try {
-      const { name, port } = req.params;
-      if (!name || !port) {
-        return res.status(400).json({
-          success: false,
-          message: 'Missing raspberry name or port'
-        });
-      }
-      const raspberry = await addRaspberry(name, port);
-      res.status(201).json({ success: true, raspberry });
-    } catch (error) {
-      res.status(500).json({ success: false, message: 'Error adding raspberry', error });
+  try {
+    const { name } = req.params;
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing raspberry name'
+      });
     }
-  };
-  
 
+    // Récupérer tous les Raspberry existants depuis la BDD
+    const raspberrys = await getRaspberrys(); // Cette fonction interroge la BDD
+    const usedHttpPorts = new Set(raspberrys.map(r => r.port)); // Extraire les ports déjà utilisés
+
+    // Trouver un port HTTP disponible dans la plage définie
+    const availableHttpPort = findAvailablePort(PORT_RANGE_HTTP, usedHttpPorts);
+    if (!availableHttpPort) {
+      return res.status(500).json({
+        success: false,
+        message: 'No available HTTP ports in the defined range'
+      });
+    }
+
+    // Ajouter le nouveau Raspberry avec le port attribué
+    const raspberry = await addRaspberry(name, availableHttpPort); // Sauvegarder dans la BDD
+    res.status(201).json({
+      success: true,
+      raspberry
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error adding raspberry',
+      error
+    });
+  }
+};
+
+// Fonction utilitaire pour trouver un port disponible
+function findAvailablePort(range, usedPorts) {
+  for (let port = range.start; port <= range.end; port++) {
+    if (!usedPorts.has(port)) {
+      return port; // Retourne le premier port disponible
+    }
+  }
+  return null; // Aucun port disponible
+}
+
+
+  
 exports.deleteRaspberryById = async (req, res) => {
   try {
     const success = await deleteRaspberryById(req.params.id);
