@@ -12,7 +12,9 @@ app.use(express.json());
 
 // Importer les routes
 const raspberrysRouter = require('./api/routers/registers');
+const traefikRoutes = require('./api/routers/traefik');
 app.use('/registers', raspberrysRouter);
+app.use('/traefik', traefikRoutes);
 
 // Route par défaut
 app.get('/', (req, res) => {

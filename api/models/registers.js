@@ -17,10 +17,6 @@ module.exports = (sequelizeInstance) => {
       allowNull: false,
       unique: true,
     },
-    status: {
-      type: DataTypes.ENUM('online', 'offline'),
-      defaultValue: 'offline',
-    },
   }, {
     tableName: 'raspberry',
     timestamps: true,
